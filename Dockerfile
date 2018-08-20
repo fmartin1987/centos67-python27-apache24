@@ -60,3 +60,8 @@ RUN \
     echo "# mod_deflate.so Config" >> /usr/local/apache2/conf/httpd.conf && \
     echo "AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript" >> /usr/local/apache2/conf/httpd.conf && \
     echo "DeflateCompressionLevel 9" >> /usr/local/apache2/conf/httpd.conf
+
+# YUM Clean
+RUN \
+    rpm --rebuilddb && \
+    yum clean all
