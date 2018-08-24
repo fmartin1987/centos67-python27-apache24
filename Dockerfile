@@ -2,7 +2,7 @@ FROM fmartin1987/centos67-python27:latest
 
 # Apache compilation
 RUN \
-    yum install -y gcc gcc-c++ autoconf automake --nogpgcheck && \
+    yum install -y gcc gcc-c++ autoconf automake && \
     cd /usr/src && \
     wget https://archive.apache.org/dist/httpd/httpd-2.4.16.tar.gz && \
     wget https://archive.apache.org/dist/apr/apr-util-1.5.4.tar.gz && \
@@ -40,7 +40,6 @@ RUN \
     wget https://codeload.github.com/GrahamDumpleton/mod_wsgi/tar.gz/4.4.13 && \
     tar -zxf 4.4.13 && \
     cd mod_wsgi-4.4.13/ && \
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib && \
     ./configure --with-apxs=/usr/local/apache2/bin/apxs --with-python=/usr/local/bin/python2.7 && \
     make && \
     make install && \
@@ -50,8 +49,7 @@ RUN \
 RUN \
     cd /usr/src/ && \
     wget https://tn123.org/mod_xsendfile/mod_xsendfile.c && \
-    /usr/local/apache2/bin/apxs -cia mod_xsendfile.c && \
-    echo "LoadModule xsendfile_module modules/mod_xsendfile.so" >> /usr/local/apache2/conf/httpd.conf
+    /usr/local/apache2/bin/apxs -cia mod_xsendfile.c
 
 # Load Deflate Module
 RUN \
@@ -60,8 +58,3 @@ RUN \
     echo "# mod_deflate.so Config" >> /usr/local/apache2/conf/httpd.conf && \
     echo "AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript" >> /usr/local/apache2/conf/httpd.conf && \
     echo "DeflateCompressionLevel 9" >> /usr/local/apache2/conf/httpd.conf
-
-# YUM Clean
-RUN \
-    rpm --rebuilddb && \
-    yum clean all
